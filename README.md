@@ -6,15 +6,15 @@ Bu loyiha GitHub Actions yordamida avtomatik APK yig'adi, kompyuterda Android St
 ## APK olish (5 qadam)
 
 1. github.com saytida yangi repository oching (masalan `qarz-daftari`).
-2. Shu papkadagi hamma fayllarni repository ga yuklang. Papka tuzilishi quyidagicha bo'lishi shart:
+2. Shu papkadagi hamma fayllarni repository ga yuklang. Asosiy fayl `index.html` **www papka ichida emas**, balki boshqa fayllar (package.json, capacitor.config.json va hokazo) bilan birga repository ning eng yuqori (bosh) qismida, ya'ni tashqarida turadi. `www` papkasini o'zingiz yaratmang, uni GitHub Actions yig'ish vaqtida o'zi yaratadi. Papka tuzilishi quyidagicha bo'lishi shart:
 
    ```
-   www/index.html
-   .github/workflows/build-apk.yml
+   index.html                         <- asosiy fayl, bosh qismda
    package.json
    capacitor.config.json
    .gitignore
    README.md
+   .github/workflows/build-apk.yml
    ```
 
 3. Yuklangandan so'ng GitHub avtomatik ishga tushadi. **Actions** bo'limiga kiring va **Build APK** ishi tugashini kuting (taxminan 4-7 daqiqa). Qo'lda ishga tushirish uchun: Actions -> Build APK -> Run workflow.
@@ -23,7 +23,7 @@ Bu loyiha GitHub Actions yordamida avtomatik APK yig'adi, kompyuterda Android St
 
 ## Dasturni o'zgartirish
 
-Hamma narsa `www/index.html` faylida. Uni GitHub da tahrirlab saqlasangiz, yangi APK avtomatik yig'iladi.
+Hamma narsa bosh qismdagi `index.html` faylida. Uni GitHub da tahrirlab saqlasangiz, yangi APK avtomatik yig'iladi.
 
 ## Eslatmalar
 

@@ -1,8 +1,8 @@
 GitHub Copilot / ChatGPT / Claude Code ga berish uchun prompt
-(repository ichida www/index.html fayli bor bo'lishi kerak)
+(repository ning bosh qismida index.html fayli bo'lishi kerak, www papka ichida emas)
 
 ------------------------------------------------------------
-Mening repository mda bitta fayl bor: www/index.html (bitta HTML faylda yozilgan, LocalStorage ishlatadigan "Qarz daftari" web dasturi).
+Mening repository mda bitta asosiy fayl bor: index.html. U www papka ichida emas, repository ning bosh (root) qismida, boshqa fayllar bilan birga turadi (bitta HTML faylda yozilgan, LocalStorage ishlatadigan "Qarz daftari" web dasturi).
 
 Shuni Capacitor yordamida Android APK ga aylantiradigan sozlamani qo'sh. Android Studio ishlatmayman, hammasi GitHub Actions da yig'ilsin.
 
@@ -12,12 +12,14 @@ Talablar:
 3. .github/workflows/build-apk.yml:
    - push (main) va qo'lda ishga tushirish (workflow_dispatch) da ishlasin;
    - ubuntu-latest, Node 20, Java 17 (temurin);
-   - npm install, keyin "npx cap add android" va "npx cap sync android";
+   - npm install;
+   - keyin "mkdir -p www && cp index.html www/index.html" (Capacitor webDir ni www deb oladi, lekin www papka repository da saqlanmaydi, uni workflow yaratadi);
+   - keyin "npx cap add android" va "npx cap sync android";
    - android papkada "chmod +x gradlew" va "./gradlew assembleDebug";
    - android/app/build/outputs/apk/debug/app-debug.apk ni actions/upload-artifact@v4 bilan "qarz-daftari-apk" nomli artifact qilib yuklasin.
-4. .gitignore: node_modules/ va android/.
-5. Android papkani repository ga qo'shma, u har safar workflow ichida yaratilsin.
+4. .gitignore: node_modules/, android/ va www/.
+5. android va www papkalarini repository ga qo'shma, ular har safar workflow ichida yaratilsin.
 6. O'zbek tilida qisqa README.md yoz: APK ni qanday olish va telefonga o'rnatish.
 
-www/index.html ichidagi dastur kodini o'zgartirma.
+index.html ichidagi dastur kodini o'zgartirma.
 ------------------------------------------------------------
