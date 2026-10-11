@@ -26,6 +26,11 @@ jobs:
       - name: Paketlarni o'rnatish
         run: npm install
 
+      - name: Asosiy faylni (index.html) www papkasiga ko'chirish
+        run: |
+          mkdir -p www
+          cp index.html www/index.html
+
       - name: Android loyihasini yaratish
         run: |
           npx cap add android
@@ -42,4 +47,3 @@ jobs:
         with:
           name: qarz-daftari-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
-
