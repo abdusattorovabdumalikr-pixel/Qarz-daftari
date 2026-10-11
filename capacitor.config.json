@@ -1,5 +1,5 @@
 {
   "appId": "uz.qarzdaftari.app",
   "appName": "Qarz daftari",
-  "webDir": "www"
+  "webDir": . "
 }
