@@ -1,0 +1,23 @@
+GitHub Copilot / ChatGPT / Claude Code ga berish uchun prompt
+(repository ichida www/index.html fayli bor bo'lishi kerak)
+
+------------------------------------------------------------
+Mening repository mda bitta fayl bor: www/index.html (bitta HTML faylda yozilgan, LocalStorage ishlatadigan "Qarz daftari" web dasturi).
+
+Shuni Capacitor yordamida Android APK ga aylantiradigan sozlamani qo'sh. Android Studio ishlatmayman, hammasi GitHub Actions da yig'ilsin.
+
+Talablar:
+1. package.json: @capacitor/core, @capacitor/cli, @capacitor/android (6.x versiya).
+2. capacitor.config.json: appId "uz.qarzdaftari.app", appName "Qarz daftari", webDir "www".
+3. .github/workflows/build-apk.yml:
+   - push (main) va qo'lda ishga tushirish (workflow_dispatch) da ishlasin;
+   - ubuntu-latest, Node 20, Java 17 (temurin);
+   - npm install, keyin "npx cap add android" va "npx cap sync android";
+   - android papkada "chmod +x gradlew" va "./gradlew assembleDebug";
+   - android/app/build/outputs/apk/debug/app-debug.apk ni actions/upload-artifact@v4 bilan "qarz-daftari-apk" nomli artifact qilib yuklasin.
+4. .gitignore: node_modules/ va android/.
+5. Android papkani repository ga qo'shma, u har safar workflow ichida yaratilsin.
+6. O'zbek tilida qisqa README.md yoz: APK ni qanday olish va telefonga o'rnatish.
+
+www/index.html ichidagi dastur kodini o'zgartirma.
+------------------------------------------------------------

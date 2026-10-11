@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e6b5b">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+[hidden]{display:none!important}
+</style>
+<title>Qarz daftari</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: bitta ustunli daftar. Tepada umumiy hisob, undan keyin uch bo'lim (Mijozlar, Qarzlar, Hisobot). */
+:root {
+  --bg: #eef1ef;
+  --surface: #ffffff;
+  --surface-2: #f4f7f5;
+  --fg: #14201c;
+  --muted: #5a6b64;
+  --line: #d8e0dc;
+  --accent: #0e6b5b;
+  --accent-fg: #ffffff;
+  --accent-soft: #dcefea;
+  --warn: #8a5600;
+  --warn-soft: #fbefd2;
+  --warn-bar: #d99a1c;
+  --bad: #b3261e;
+  --bad-soft: #fbe4e1;
+  --ok: #1d6b3a;
+  --ok-soft: #dff2e5;
+  --shadow: 0 8px 30px rgba(10, 30, 25, .18);
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1614;
+    --surface: #15201d;
+    --surface-2: #1a2723;
+    --fg: #e5eee9;
+    --muted: #93a49d;
+    --line: #28372f;
+    --accent: #4fc3a8;
+    --accent-fg: #07201a;
+    --accent-soft: #1b3a33;
+    --warn: #f0c060;
+    --warn-soft: #3a2f12;
+    --warn-bar: #e0b04a;
+    --bad: #ff8f86;
+    --bad-soft: #3d1b19;
+    --ok: #86d6a0;
+    --ok-soft: #17331f;
+    --shadow: 0 8px 30px rgba(0, 0, 0, .5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1614;
+  --surface: #15201d;
+  --surface-2: #1a2723;
+  --fg: #e5eee9;
+  --muted: #93a49d;
+  --line: #28372f;
+  --accent: #4fc3a8;
+  --accent-fg: #07201a;
+  --accent-soft: #1b3a33;
+  --warn: #f0c060;
+  --warn-soft: #3a2f12;
+  --warn-bar: #e0b04a;
+  --bad: #ff8f86;
+  --bad-soft: #3d1b19;
+  --ok: #86d6a0;
+  --ok-soft: #17331f;
+  --shadow: 0 8px 30px rgba(0, 0, 0, .5);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.45;
+  padding-inline: 16px;
+  padding-block: 20px 48px;
+}
+.app { max-width: 960px; margin-inline: auto; display: flex; flex-direction: column; gap: 16px; }
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: 22px; font-weight: 600; letter-spacing: -.01em; text-wrap: balance; }
+h2 { font-size: 18px; font-weight: 600; text-wrap: balance; }
+h3 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.top .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 40px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--accent);
+  background: var(--accent); color: var(--accent-fg); font-weight: 500; cursor: pointer;
+}
+.btn:hover { filter: brightness(1.06); }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn.ghost:hover { background: var(--surface-2); filter: none; }
+.btn.danger { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn.sm { min-height: 32px; padding: 0 12px; font-size: 13px; }
+.btn.link { border-color: transparent; background: transparent; color: var(--accent); padding: 0 8px; }
+.btn.link.bad { color: var(--bad); }
+.btn.link:hover { background: var(--surface-2); filter: none; }
+
+.banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap;
+  background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 10px 14px; font-size: 13px;
+}
+.banner .btn { border-color: currentColor; color: inherit; }
+
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.stat {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+}
+.stat .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.stat .v { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 22px; font-weight: 500; overflow-wrap: anywhere; }
+.stat .v small { font-size: 12px; color: var(--muted); font-weight: 400; }
+.stat .s { font-size: 12px; color: var(--muted); }
+.stat.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.stat.primary .k, .stat.primary .s, .stat.primary .v small { color: inherit; opacity: .85; }
+.stat.late .v { color: var(--bad); }
+
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tab {
+  border: 0; background: none; padding: 10px 14px; cursor: pointer; color: var(--muted); font-weight: 500;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap;
+}
+.tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+.tab .count { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: 4px; }
+
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.toolbar .search { flex: 1 1 200px; min-width: 0; }
+input, select {
+  width: 100%; min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--fg);
+}
+input::placeholder { color: var(--muted); opacity: .8; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.chip {
+  min-height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); cursor: pointer; font-size: 13px;
+}
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+.chip.x { background: var(--surface-2); }
+
+.list { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; padding: 14px 16px; border-top: 1px solid var(--line); align-items: center; }
+.row:first-child { border-top: 0; }
+.row .name { font-weight: 600; overflow-wrap: anywhere; }
+.row .meta { color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.row .side { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.row .amt { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 500; font-size: 16px; }
+.row .acts { grid-column: 1 / -1; display: flex; gap: 4px; flex-wrap: wrap; }
+.row.paid .name, .row.paid .amt { color: var(--muted); }
+@media (min-width: 760px) {
+  .row { grid-template-columns: minmax(0, 1fr) 190px auto; }
+  .row .acts { grid-column: auto; justify-content: flex-end; flex-wrap: nowrap; }
+}
+
+.pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.pill.late { background: var(--bad-soft); color: var(--bad); }
+.pill.soon { background: var(--warn-soft); color: var(--warn); }
+.pill.open { background: var(--accent-soft); color: var(--accent); }
+.pill.paid { background: var(--ok-soft); color: var(--ok); }
+.pill.none { background: var(--surface-2); color: var(--muted); }
+
+.empty { padding: 36px 20px; text-align: center; color: var(--muted); display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.empty strong { color: var(--fg); font-weight: 600; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.report { display: flex; flex-direction: column; gap: 16px; }
+.bar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: var(--surface-2); }
+.bar i { display: block; height: 100%; }
+.bar .b-late { background: var(--bad); }
+.bar .b-soon { background: var(--warn-bar); }
+.bar .b-open { background: var(--accent); }
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 16px; }
+.legend div { display: flex; flex-direction: column; gap: 1px; font-size: 13px; color: var(--muted); }
+.legend .lv { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--fg); font-size: 15px; font-weight: 500; }
+.legend .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 620px; }
+th, td { padding: 11px 14px; text-align: left; border-top: 1px solid var(--line); white-space: nowrap; }
+thead th { border-top: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; background: var(--surface-2); }
+td.r, th.r { text-align: right; }
+tfoot td { font-weight: 600; background: var(--surface-2); }
+td .late { color: var(--bad); }
+.note { font-size: 13px; color: var(--muted); }
+
+.overlay { position: fixed; inset: 0; background: rgba(8, 20, 16, .55); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 20; }
+.sheet {
+  width: min(480px, 100%); max-height: 100%; overflow-y: auto; background: var(--surface); color: var(--fg);
+  border-radius: 12px; padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px; border: 1px solid var(--line);
+}
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 13px; font-weight: 500; }
+.field .hint { font-size: 12px; color: var(--muted); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 440px) { .two { grid-template-columns: 1fr; } }
+.quick { display: flex; gap: 6px; flex-wrap: wrap; }
+.err { color: var(--bad); background: var(--bad-soft); border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+.sheet-acts { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-size: 14px; z-index: 30; max-width: calc(100% - 32px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .btn, .chip, .tab { transition: background-color .15s, border-color .15s, color .15s; }
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div>
+      <h1>Qarz daftari</h1>
+      <p class="sub">Do'kon nasiyalari hisobi</p>
+    </div>
+    <button class="btn" type="button" data-action="new-debt">+ Qarz qo'shish</button>
+  </header>
+  <div id="banner"></div>
+  <section id="summary" class="summary" aria-label="Umumiy hisob"></section>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Bo'limlar"></nav>
+  <main id="view"></main>
+</div>
+<div id="modal"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+  var KEY = "qarzDaftari.v1";
+  var NB = " ";
+
+  /* ---------- yordamchi funksiyalar ---------- */
+  function $(s) { return document.querySelector(s); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function p2(n) { return (n < 10 ? "0" : "") + n; }
+  function iso(d) { return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()); }
+  function today() { return iso(new Date()); }
+  function addDays(s, n) {
+    var a = s.split("-").map(Number);
+    return iso(new Date(a[0], a[1] - 1, a[2] + n));
+  }
+  function diffDays(a, b) {
+    var x = a.split("-").map(Number), y = b.split("-").map(Number);
+    return Math.round((Date.UTC(y[0], y[1] - 1, y[2]) - Date.UTC(x[0], x[1] - 1, x[2])) / 864e5);
+  }
+  function fmtDate(s) { return s ? s.split("-").reverse().join(".") : ""; }
+  function money(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, NB); }
+  function som(n) { return money(n) + NB + "so'm"; }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function digits(s) { return String(s || "").replace(/\D/g, ""); }
+  function fmtPhone(v) {
+    var d = digits(v);
+    if (d.indexOf("998") === 0) d = d.slice(3);
+    d = d.slice(0, 9);
+    var o = "+998";
+    if (d.length) o += " " + d.slice(0, 2);
+    if (d.length > 2) o += " " + d.slice(2, 5);
+    if (d.length > 5) o += " " + d.slice(5, 7);
+    if (d.length > 7) o += " " + d.slice(7, 9);
+    return o;
+  }
+  function fullName(c) { return c.first + " " + c.last; }
+
+  /* ---------- ma'lumotlar (LocalStorage) ---------- */
+  var db = { customers: [], debts: [] };
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { /* xotira yopiq bo'lsa, ma'lumot sahifa ochiq turguncha saqlanadi */ }
+  }
+
+  function seed() {
+    var t = today();
+    var c = [
+      { id: "c1", first: "Aziza", last: "Karimova", phone: "+998 90 123 45 67", sample: true },
+      { id: "c2", first: "Bobur", last: "Rahimov", phone: "+998 91 234 56 78", sample: true },
+      { id: "c3", first: "Dilnoza", last: "Yusupova", phone: "+998 93 345 67 89", sample: true },
+      { id: "c4", first: "Jasur", last: "Toshmatov", phone: "+998 94 456 78 90", sample: true },
+      { id: "c5", first: "Malika", last: "Ergasheva", phone: "+998 97 567 89 01", sample: true }
+    ];
+    function d(cid, amount, taken, due, note, paidAgo) {
+      return {
+        id: uid() + cid, customerId: cid, amount: amount, takenAt: addDays(t, taken), dueAt: addDays(t, due),
+        note: note, paidAt: paidAgo == null ? null : addDays(t, -paidAgo), sample: true
+      };
+    }
+    return {
+      customers: c,
+      debts: [
+        d("c1", 450000, -25, -4, "Un, yog' va shakar", null),
+        d("c1", 120000, -6, 9, "Choy va qand-qurs", null),
+        d("c2", 1200000, -40, -12, "Maishiy kimyo, katta xarid", null),
+        d("c2", 85000, -3, 4, "Non va sut mahsulotlari", null),
+        d("c3", 2150000, -10, 20, "Muzlatgich uchun to'lov", null),
+        d("c4", 320000, -18, 12, "Oziq-ovqat", null),
+        d("c4", 60000, -30, -20, "Sigaret va ichimliklar", 8),
+        d("c5", 275000, -2, 28, "Bolalar kiyimi", null)
+      ]
+    };
+  }
+
+  function load() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) { raw = null; }
+    if (raw) {
+      try {
+        var p = JSON.parse(raw);
+        if (p && Array.isArray(p.customers) && Array.isArray(p.debts)) { db = p; return; }
+      } catch (e) { /* buzilgan yozuv: namuna bilan boshlaymiz */ }
+    }
+    db = seed();
+    save();
+  }
+
+  /* ---------- hisob-kitob ---------- */
+  function debtStatus(d) {
+    if (d.paidAt) return { key: "paid", label: "To'langan", left: null };
+    var left = diffDays(today(), d.dueAt);
+    if (left < 0) return { key: "late", label: (-left) + " kun kechikkan", left: left };
+    if (left === 0) return { key: "soon", label: "Bugun to'lanadi", left: left };
+    if (left <= 7) return { key: "soon", label: left + " kun qoldi", left: left };
+    return { key: "open", label: left + " kun qoldi", left: left };
+  }
+
+  function totals() {
+    var r = { total: 0, late: 0, lateN: 0, soon: 0, soonN: 0, open: 0, openCount: 0, paid: 0, debtors: 0 };
+    var owing = {};
+    db.debts.forEach(function (d) {
+      if (d.paidAt) { r.paid += d.amount; return; }
+      var s = debtStatus(d);
+      r.total += d.amount; r.openCount++; owing[d.customerId] = true;
+      if (s.key === "late") { r.late += d.amount; r.lateN++; }
+      else if (s.key === "soon") { r.soon += d.amount; r.soonN++; }
+      else r.open += d.amount;
+    });
+    r.debtors = Object.keys(owing).length;
+    return r;
+  }
+
+  function customerStats(id) {
+    var r = { owed: 0, late: 0, openN: 0, doneN: 0, next: null };
+    db.debts.forEach(function (d) {
+      if (d.customerId !== id) return;
+      if (d.paidAt) { r.doneN++; return; }
+      r.owed += d.amount; r.openN++;
+      if (diffDays(today(), d.dueAt) < 0) r.late += d.amount;
+      if (!r.next || d.dueAt < r.next) r.next = d.dueAt;
+    });
+    return r;
+  }
+
+  function findCustomer(id) {
+    for (var i = 0; i < db.customers.length; i++) if (db.customers[i].id === id) return db.customers[i];
+    return null;
+  }
+  function findDebt(id) {
+    for (var i = 0; i < db.debts.length; i++) if (db.debts[i].id === id) return db.debts[i];
+    return null;
+  }
+
+  /* ---------- holat ---------- */
+  var ui = { tab: "customers", q: "", filter: "all", customerId: null };
+
+  /* ---------- ko'rinish ---------- */
+  function renderBanner() {
+    var has = db.customers.some(function (c) { return c.sample; }) || db.debts.some(function (d) { return d.sample; });
+    $("#banner").innerHTML = has
+      ? '<div class="banner"><span>Hozir namuna ma\'lumotlar ko\'rsatilmoqda. Ularni o\'chirib, o\'z mijozlaringizni kiriting.</span>' +
+        '<button class="btn ghost sm" type="button" data-action="clear-samples">Namunalarni o\'chirish</button></div>'
+      : "";
+  }
+
+  function renderSummary() {
+    var t = totals();
+    $("#summary").innerHTML =
+      '<div class="stat primary"><span class="k">Umumiy qarz</span><span class="v">' + money(t.total) + ' <small>so\'m</small></span><span class="s">' + t.openCount + ' ta ochiq qarz</span></div>' +
+      '<div class="stat late"><span class="k">Muddati o\'tgan</span><span class="v">' + money(t.late) + ' <small>so\'m</small></span><span class="s">' + t.lateN + ' ta qarz</span></div>' +
+      '<div class="stat"><span class="k">7 kun ichida</span><span class="v">' + money(t.soon) + ' <small>so\'m</small></span><span class="s">' + t.soonN + ' ta qarz</span></div>' +
+      '<div class="stat"><span class="k">Qarzdorlar</span><span class="v">' + t.debtors + '</span><span class="s">jami ' + db.customers.length + ' ta mijozdan</span></div>';
+  }
+
+  function renderTabs() {
+    var t = totals();
+    var items = [
+      ["customers", "Mijozlar", db.customers.length],
+      ["debts", "Qarzlar", t.openCount],
+      ["report", "Hisobot", null]
+    ];
+    $("#tabs").innerHTML = items.map(function (it) {
+      return '<button class="tab" role="tab" type="button" data-action="tab" data-v="' + it[0] + '" aria-selected="' + (ui.tab === it[0]) + '">' +
+        it[1] + (it[2] != null ? '<span class="count">' + it[2] + "</span>" : "") + "</button>";
+    }).join("");
+  }
+
+  function pillFor(s) { return '<span class="pill ' + s.key + '">' + esc(s.label) + "</span>"; }
+
+  /* Mijozlar */
+  function customersList() {
+    var q = ui.q.trim().toLowerCase(), dq = digits(ui.q);
+    var rows = db.customers.map(function (c) { return { c: c, s: customerStats(c.id) }; });
+    if (q) {
+      rows = rows.filter(function (x) {
+        return fullName(x.c).toLowerCase().indexOf(q) >= 0 || (dq && digits(x.c.phone).indexOf(dq) >= 0);
+      });
+    }
+    rows.sort(function (a, b) { return b.s.owed - a.s.owed || fullName(a.c).localeCompare(fullName(b.c)); });
+    if (!db.customers.length) {
+      return '<div class="empty"><p><strong>Hozircha mijoz yo\'q.</strong><br>Birinchi mijozni qo\'shing, so\'ng unga qarz yozing.</p>' +
+        '<button class="btn" type="button" data-action="new-customer">+ Mijoz qo\'shish</button></div>';
+    }
+    if (!rows.length) return '<div class="empty"><p>"' + esc(ui.q) + '" bo\'yicha mijoz topilmadi.</p></div>';
+    return rows.map(function (x) {
+      var c = x.c, s = x.s, pill;
+      if (s.late > 0) pill = '<span class="pill late">Muddati o\'tgan: ' + som(s.late) + "</span>";
+      else if (s.openN > 0) pill = '<span class="pill open">' + s.openN + " ta ochiq qarz</span>";
+      else if (s.doneN > 0) pill = '<span class="pill paid">Hisob yopilgan</span>';
+      else pill = '<span class="pill none">Qarz yozilmagan</span>';
+      return '<div class="row"><div class="main"><div class="name">' + esc(fullName(c)) + '</div><div class="meta num">' + esc(c.phone) + "</div></div>" +
+        '<div class="side"><div class="amt">' + (s.owed ? som(s.owed) : "Qarzi yo'q") + "</div>" + pill + "</div>" +
+        '<div class="acts">' +
+        '<button class="btn link sm" type="button" data-action="new-debt" data-id="' + c.id + '">Qarz qo\'shish</button>' +
+        '<button class="btn link sm" type="button" data-action="view-customer" data-id="' + c.id + '">Qarzlari</button>' +
+        '<button class="btn link sm" type="button" data-action="edit-customer" data-id="' + c.id + '">Tahrirlash</button>' +
+        '<button class="btn link sm bad" type="button" data-action="del-customer" data-id="' + c.id + '">O\'chirish</button>' +
+        "</div></div>";
+    }).join("");
+  }
+
+  /* Qarzlar */
+  function debtsList() {
+    var q = ui.q.trim().toLowerCase();
+    var rows = db.debts.filter(function (d) {
+      var c = findCustomer(d.customerId);
+      if (!c) return false;
+      var s = debtStatus(d);
+      if (ui.customerId && d.customerId !== ui.customerId) return false;
+      if (ui.filter === "open" && d.paidAt) return false;
+      if (ui.filter === "late" && s.key !== "late") return false;
+      if (ui.filter === "paid" && !d.paidAt) return false;
+      if (q && (fullName(c) + " " + (d.note || "")).toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    rows.sort(function (a, b) {
+      if (!!a.paidAt !== !!b.paidAt) return a.paidAt ? 1 : -1;
+      if (a.paidAt) return a.paidAt < b.paidAt ? 1 : -1;
+      return a.dueAt < b.dueAt ? -1 : 1;
+    });
+    if (!db.debts.length) {
+      return '<div class="empty"><p><strong>Hali qarz yozilmagan.</strong><br>Mijozga olingan summa va to\'lash muddatini kiriting.</p>' +
+        '<button class="btn" type="button" data-action="new-debt">+ Qarz qo\'shish</button></div>';
+    }
+    if (!rows.length) return '<div class="empty"><p>Bu filtr bo\'yicha qarz topilmadi.</p></div>';
+    return rows.map(function (d) {
+      var c = findCustomer(d.customerId), s = debtStatus(d);
+      var dates = "Olingan " + fmtDate(d.takenAt) + " · Muddat " + fmtDate(d.dueAt) + (d.paidAt ? " · To'langan " + fmtDate(d.paidAt) : "");
+      var payBtn = d.paidAt
+        ? '<button class="btn link sm" type="button" data-action="unpay" data-id="' + d.id + '">Qaytarish</button>'
+        : '<button class="btn sm" type="button" data-action="pay" data-id="' + d.id + '">To\'landi</button>';
+      return '<div class="row' + (d.paidAt ? " paid" : "") + '"><div class="main"><div class="name">' + esc(fullName(c)) + "</div>" +
+        (d.note ? '<div class="meta">' + esc(d.note) + "</div>" : "") +
+        '<div class="meta num">' + dates + "</div></div>" +
+        '<div class="side"><div class="amt">' + som(d.amount) + "</div>" + pillFor(s) + "</div>" +
+        '<div class="acts">' + payBtn +
+        '<button class="btn link sm" type="button" data-action="edit-debt" data-id="' + d.id + '">Tahrirlash</button>' +
+        '<button class="btn link sm bad" type="button" data-action="del-debt" data-id="' + d.id + '">O\'chirish</button></div></div>';
+    }).join("");
+  }
+
+  /* Hisobot */
+  function reportView() {
+    var t = totals();
+    var pct = function (v) { return t.total ? (v / t.total * 100) : 0; };
+    var rows = db.customers.map(function (c) { return { c: c, s: customerStats(c.id) }; })
+      .filter(function (x) { return x.s.owed > 0; })
+      .sort(function (a, b) { return b.s.owed - a.s.owed; });
+    var noDebt = db.customers.length - rows.length;
+    var sumOpenN = 0, sumLate = 0;
+    var body = rows.map(function (x) {
+      sumOpenN += x.s.openN; sumLate += x.s.late;
+      var nextCell = "";
+      if (x.s.next) {
+        var left = diffDays(today(), x.s.next);
+        nextCell = fmtDate(x.s.next) + (left < 0 ? ' <span class="late">(' + (-left) + " kun kech)</span>" : "");
+      }
+      return "<tr><td>" + esc(fullName(x.c)) + '</td><td class="num">' + esc(x.c.phone) + '</td><td class="r num">' + x.s.openN +
+        '</td><td class="r num">' + som(x.s.owed) + '</td><td class="r num">' + (x.s.late ? '<span class="late">' + som(x.s.late) + "</span>" : "—") +
+        '</td><td class="num">' + nextCell + "</td></tr>";
+    }).join("");
+
+    var table = rows.length
+      ? '<div class="tablewrap"><table><thead><tr><th>Mijoz</th><th>Telefon</th><th class="r">Ochiq qarzlar</th><th class="r">Umumiy qarz</th><th class="r">Muddati o\'tgan</th><th>Eng yaqin muddat</th></tr></thead><tbody>' +
+        body + '</tbody><tfoot><tr><td colspan="2">Jami</td><td class="r num">' + sumOpenN + '</td><td class="r num">' + som(t.total) +
+        '</td><td class="r num">' + (sumLate ? som(sumLate) : "—") + "</td><td></td></tr></tfoot></table></div>"
+      : '<div class="empty list"><p><strong>Hozir ochiq qarz yo\'q.</strong></p></div>';
+
+    return '<div class="report"><div class="panel"><h3>Umumiy qarz</h3>' +
+      '<div class="num" style="font-size:30px;font-weight:500;overflow-wrap:anywhere">' + som(t.total) + "</div>" +
+      '<div class="bar" role="img" aria-label="Qarzlar muddat bo\'yicha taqsimoti">' +
+      '<i class="b-late" style="width:' + pct(t.late) + '%"></i><i class="b-soon" style="width:' + pct(t.soon) + '%"></i><i class="b-open" style="width:' + pct(t.open) + '%"></i></div>' +
+      '<div class="legend">' +
+      '<div><span><span class="dot" style="background:var(--bad)"></span>Muddati o\'tgan</span><span class="lv">' + som(t.late) + "</span></div>" +
+      '<div><span><span class="dot" style="background:var(--warn-bar)"></span>7 kun ichida</span><span class="lv">' + som(t.soon) + "</span></div>" +
+      '<div><span><span class="dot" style="background:var(--accent)"></span>Keyinroq</span><span class="lv">' + som(t.open) + "</span></div>" +
+      '<div><span>To\'langan (jami)</span><span class="lv">' + som(t.paid) + "</span></div></div></div>" +
+      "<h3>Mijozlar kesimida</h3>" + table +
+      (noDebt > 0 && rows.length ? '<p class="note">Qarzi yo\'q mijozlar: ' + noDebt + " ta.</p>" : "") + "</div>";
+  }
+
+  function renderView() {
+    var v = $("#view");
+    if (ui.tab === "customers") {
+      v.innerHTML = '<div class="toolbar"><div class="search"><input id="search" type="search" placeholder="Ism yoki telefon bo\'yicha qidirish" value="' + esc(ui.q) + '" aria-label="Qidirish"></div>' +
+        '<button class="btn" type="button" data-action="new-customer">+ Mijoz qo\'shish</button></div>' +
+        '<div class="list" id="list" style="margin-top:12px">' + customersList() + "</div>";
+    } else if (ui.tab === "debts") {
+      var chips = [["all", "Barchasi"], ["open", "To'lanmagan"], ["late", "Muddati o'tgan"], ["paid", "To'langan"]].map(function (f) {
+        return '<button class="chip" type="button" data-action="filter" data-v="' + f[0] + '" aria-pressed="' + (ui.filter === f[0]) + '">' + f[1] + "</button>";
+      }).join("");
+      var who = "";
+      if (ui.customerId) {
+        var c = findCustomer(ui.customerId);
+        if (c) who = '<button class="chip x" type="button" data-action="clear-customer" aria-label="Mijoz filtrini olib tashlash">' + esc(fullName(c)) + " ✕</button>";
+        else ui.customerId = null;
+      }
+      v.innerHTML = '<div class="toolbar"><div class="search"><input id="search" type="search" placeholder="Mijoz yoki izoh bo\'yicha qidirish" value="' + esc(ui.q) + '" aria-label="Qidirish"></div>' +
+        '<button class="btn" type="button" data-action="new-debt">+ Qarz qo\'shish</button></div>' +
+        '<div class="chips" style="margin-top:12px">' + chips + who + "</div>" +
+        '<div class="list" id="list" style="margin-top:12px">' + debtsList() + "</div>";
+    } else {
+      v.innerHTML = reportView();
+    }
+  }
+
+  function renderAll() {
+    renderBanner(); renderSummary(); renderTabs(); renderView();
+  }
+
+  /* ---------- bildirishnoma ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $("#toast");
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 2600);
+  }
+
+  /* ---------- modal oynalar ---------- */
+  function closeModal() { $("#modal").innerHTML = ""; }
+
+  function openModal(o) {
+    $("#modal").innerHTML =
+      '<div class="overlay" id="overlay"><form class="sheet" role="dialog" aria-modal="true" aria-labelledby="mt" novalidate>' +
+      '<h2 id="mt">' + esc(o.title) + "</h2>" + o.body +
+      '<p class="err" id="merr" role="alert" hidden></p>' +
+      '<div class="sheet-acts"><button type="button" class="btn ghost" data-action="close-modal">Bekor qilish</button>' +
+      '<button type="submit" class="btn' + (o.danger ? " danger" : "") + '">' + esc(o.submit) + "</button></div></form></div>";
+    var f = $("#modal form");
+    f.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var err = o.onSubmit(f);
+      if (err) { var m = $("#merr"); m.textContent = err; m.hidden = false; }
+      else closeModal();
+    });
+    var first = f.querySelector("input,select");
+    setTimeout(function () { (first || f.querySelector("button[type=submit]")).focus(); }, 0);
+  }
+
+  function field(id, label, inner, hint) {
+    return '<div class="field"><label for="' + id + '">' + label + "</label>" + inner + (hint ? '<span class="hint">' + hint + "</span>" : "") + "</div>";
+  }
+
+  function customerForm(id) {
+    var c = id ? findCustomer(id) : null;
+    openModal({
+      title: c ? "Mijozni tahrirlash" : "Yangi mijoz",
+      submit: c ? "Saqlash" : "Qo'shish",
+      body:
+        '<div class="two">' +
+        field("f-first", "Ism", '<input id="f-first" name="first" autocomplete="off" value="' + esc(c ? c.first : "") + '">') +
+        field("f-last", "Familiya", '<input id="f-last" name="last" autocomplete="off" value="' + esc(c ? c.last : "") + '">') +
+        "</div>" +
+        field("f-phone", "Telefon raqami", '<input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="off" value="' + esc(c ? c.phone : "+998") + '">', "Format: +998 90 123 45 67"),
+      onSubmit: function (f) {
+        var first = f.elements["first"].value.trim(), last = f.elements["last"].value.trim();
+        var phone = fmtPhone(f.elements["phone"].value);
+        if (!first) return "Mijozning ismini kiriting.";
+        if (!last) return "Mijozning familiyasini kiriting.";
+        if (digits(phone).length !== 12) return "Telefon raqamini to'liq kiriting (9 ta raqam).";
+        var dup = db.customers.filter(function (x) { return x.id !== id && digits(x.phone) === digits(phone); })[0];
+        if (dup) return "Bu telefon raqami " + fullName(dup) + " nomida mavjud.";
+        if (c) { c.first = first; c.last = last; c.phone = phone; }
+        else db.customers.push({ id: uid(), first: first, last: last, phone: phone });
+        save(); renderAll(); toast(c ? "Mijoz yangilandi" : "Mijoz qo'shildi");
+        return null;
+      }
+    });
+  }
+
+  function debtForm(id, presetCustomer) {
+    var d = id ? findDebt(id) : null;
+    if (!db.customers.length) {
+      openModal({
+        title: "Avval mijoz qo'shing", submit: "Mijoz qo'shish",
+        body: '<p class="note">Qarz yozish uchun kamida bitta mijoz bo\'lishi kerak.</p>',
+        onSubmit: function () { setTimeout(function () { customerForm(null); }, 0); return null; }
+      });
+      return;
+    }
+    var t = today();
+    var selected = d ? d.customerId : (presetCustomer || ui.customerId || "");
+    var opts = '<option value="">Mijozni tanlang</option>' + db.customers.map(function (c) {
+      return '<option value="' + c.id + '"' + (c.id === selected ? " selected" : "") + ">" + esc(fullName(c)) + " · " + esc(c.phone) + "</option>";
+    }).join("");
+    openModal({
+      title: d ? "Qarzni tahrirlash" : "Yangi qarz",
+      submit: d ? "Saqlash" : "Qo'shish",
+      body:
+        field("f-cust", "Mijoz", '<select id="f-cust" name="cust">' + opts + "</select>") +
+        field("f-amount", "Qarz summasi (so'm)", '<input id="f-amount" name="amount" inputmode="numeric" autocomplete="off" placeholder="Masalan: 450 000" value="' + (d ? money(d.amount) : "") + '">') +
+        '<div class="two">' +
+        field("f-taken", "Olingan sana", '<input id="f-taken" name="taken" type="date" value="' + (d ? d.takenAt : t) + '">') +
+        field("f-due", "To'lash muddati", '<input id="f-due" name="due" type="date" value="' + (d ? d.dueAt : addDays(t, 30)) + '">') +
+        "</div>" +
+        '<div class="quick" aria-label="Muddatni tez tanlash"><span class="hint note">Muddat:</span>' +
+        [7, 15, 30, 60].map(function (n) { return '<button class="chip" type="button" data-action="due-add" data-v="' + n + '">+' + n + " kun</button>"; }).join("") + "</div>" +
+        field("f-note", "Izoh (ixtiyoriy)", '<input id="f-note" name="note" autocomplete="off" placeholder="Masalan: un va yog\'" value="' + esc(d ? d.note : "") + '">'),
+      onSubmit: function (f) {
+        var cust = f.elements["cust"].value;
+        var amount = parseInt(digits(f.elements["amount"].value), 10);
+        var taken = f.elements["taken"].value, due = f.elements["due"].value;
+        var note = f.elements["note"].value.trim();
+        if (!cust) return "Mijozni tanlang.";
+        if (!amount || amount <= 0) return "Qarz summasini kiriting.";
+        if (!taken) return "Olingan sanani kiriting.";
+        if (!due) return "To'lash muddatini kiriting.";
+        if (due < taken) return "To'lash muddati olingan sanadan oldin bo'lishi mumkin emas.";
+        if (d) { d.customerId = cust; d.amount = amount; d.takenAt = taken; d.dueAt = due; d.note = note; }
+        else db.debts.push({ id: uid(), customerId: cust, amount: amount, takenAt: taken, dueAt: due, note: note, paidAt: null });
+        var cc = findCustomer(cust); if (cc && cc.sample && !d) cc.sample = false;
+        save(); renderAll(); toast(d ? "Qarz yangilandi" : "Qarz qo'shildi");
+        return null;
+      }
+    });
+  }
+
+  function confirmBox(title, text, label, action) {
+    openModal({ title: title, submit: label, danger: true, body: '<p>' + text + "</p>", onSubmit: function () { action(); return null; } });
+  }
+
+  /* ---------- hodisalar ---------- */
+  document.addEventListener("click", function (e) {
+    if (e.target && e.target.id === "overlay") { closeModal(); return; }
+    var el = e.target.closest("[data-action]");
+    if (!el) return;
+    var a = el.getAttribute("data-action"), id = el.getAttribute("data-id"), v = el.getAttribute("data-v");
+    switch (a) {
+      case "tab": ui.tab = v; ui.q = ""; renderTabs(); renderView(); break;
+      case "filter": ui.filter = v; renderView(); break;
+      case "view-customer": ui.customerId = id; ui.filter = "all"; ui.tab = "debts"; ui.q = ""; renderTabs(); renderView(); break;
+      case "clear-customer": ui.customerId = null; renderView(); break;
+      case "new-customer": customerForm(null); break;
+      case "edit-customer": customerForm(id); break;
+      case "del-customer": {
+        var c = findCustomer(id); if (!c) break;
+        var n = db.debts.filter(function (d) { return d.customerId === id; }).length;
+        confirmBox("Mijozni o'chirish", "<strong>" + esc(fullName(c)) + "</strong> va unga yozilgan " + n + " ta qarz o'chiriladi. Bu amalni qaytarib bo'lmaydi.", "O'chirish", function () {
+          db.customers = db.customers.filter(function (x) { return x.id !== id; });
+          db.debts = db.debts.filter(function (d) { return d.customerId !== id; });
+          if (ui.customerId === id) ui.customerId = null;
+          save(); renderAll(); toast("Mijoz o'chirildi");
+        });
+        break;
+      }
+      case "new-debt": debtForm(null, id); break;
+      case "edit-debt": debtForm(id); break;
+      case "del-debt": {
+        var d = findDebt(id); if (!d) break;
+        var cu = findCustomer(d.customerId);
+        confirmBox("Qarzni o'chirish", "<strong>" + esc(cu ? fullName(cu) : "") + "</strong> nomidagi " + som(d.amount) + " qarz o'chiriladi.", "O'chirish", function () {
+          db.debts = db.debts.filter(function (x) { return x.id !== id; });
+          save(); renderAll(); toast("Qarz o'chirildi");
+        });
+        break;
+      }
+      case "pay": { var p = findDebt(id); if (p) { p.paidAt = today(); save(); renderAll(); toast("Qarz to'langan deb belgilandi"); } break; }
+      case "unpay": { var u = findDebt(id); if (u) { u.paidAt = null; save(); renderAll(); toast("Qarz qayta ochildi"); } break; }
+      case "close-modal": closeModal(); break;
+      case "due-add": {
+        var f = $("#modal form"); if (!f) break;
+        var tk = f.elements["taken"].value || today();
+        f.elements["due"].value = addDays(tk, parseInt(v, 10));
+        break;
+      }
+      case "clear-samples": {
+        db.debts = db.debts.filter(function (d) { return !d.sample; });
+        db.customers = db.customers.filter(function (c) {
+          if (!c.sample) return true;
+          return db.debts.some(function (d) { return d.customerId === c.id; });
+        });
+        db.customers.forEach(function (c) { delete c.sample; });
+        ui.customerId = null;
+        save(); renderAll(); toast("Namuna ma'lumotlar o'chirildi");
+        break;
+      }
+    }
+  });
+
+  document.addEventListener("input", function (e) {
+    var t = e.target;
+    if (t.id === "search") {
+      ui.q = t.value;
+      $("#list").innerHTML = ui.tab === "customers" ? customersList() : debtsList();
+    } else if (t.id === "f-phone") {
+      t.value = fmtPhone(t.value);
+    } else if (t.id === "f-amount") {
+      var d = digits(t.value);
+      t.value = d ? money(parseInt(d, 10)) : "";
+    }
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && $("#modal").firstChild) closeModal();
+  });
+
+  load();
+  renderAll();
+})();
+</script>
+
+</body>
+</html>
